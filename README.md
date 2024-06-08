@@ -2,7 +2,7 @@
 
 ## General
 
-Fine tuning model Viet-Mistral-7B on Travel Vietnamese QandA dataset.
+Fine tuning model Viet-Mistral 7B on Travel Vietnamese QA dataset.
 
   
 
@@ -11,6 +11,7 @@ Fine tuning model Viet-Mistral-7B on Travel Vietnamese QandA dataset.
 - The dataset was created by Gemini-1.5 with topics about Vietnam tourism such as famous places, costs travel, local food, culture and festivals, etc. . .
 
 - Includes 4500 rows with 2 columns: *ques*, *ans*.
+
 | ques                                                      | ans                                                                                                                  |
 | --------------------------------------------------------- | -------------------------------------------------------------------------------------------------------------------- |
 | "Địa điểm du lịch nổi tiếng ở Đà Nẵng là gì?"             | "Đà Nẵng nổi tiếng với Bà Nà Hills, Sơn Trà Peninsula, và Cầu Rồng."                                                 |
@@ -25,44 +26,45 @@ Fine tuning model Viet-Mistral-7B on Travel Vietnamese QandA dataset.
 ## Model
 
 Vistral (Viet Mistral) is a model developed from model Mistral for Vietnamese QA problems.
-The model used is loaded in 4bit format.
+*Model is loaded in 4bit format.*
 
 ```
-    bnb_config = BitsAndBytesConfig(
-        load_in_4bit= True,
-        bnb_4bit_quant_type= "nf4",
-        bnb_4bit_compute_dtype= torch.bfloat16,
-        bnb_4bit_use_double_quant= False,
-    )
-    model = AutoModelForCausalLM.from_pretrained(
-        "Viet-Mistral/Vistral-7B-Chat",
-        load_in_4bit=True,
-        quantization_config=bnb_config,
-        torch_dtype=torch.bfloat16,
-        device_map="auto",
-        trust_remote_code=True,
-    )
+bnb_config = BitsAndBytesConfig(
+	load_in_4bit= True,
+	bnb_4bit_quant_type= "nf4",
+	bnb_4bit_compute_dtype= torch.bfloat16,
+	bnb_4bit_use_double_quant= False,
+)
+model = AutoModelForCausalLM.from_pretrained(
+	"Viet-Mistral/Vistral-7B-Chat",
+	load_in_4bit=True,
+	quantization_config=bnb_config,
+	torch_dtype=torch.bfloat16,
+	device_map="auto",
+	trust_remote_code=True,
+)
 ```
+
 Load model
 ```
 # Load base model 4bit
 # ........
+model.config.use_cache = False #silence the warnings. Please re-enable for inference!
+model.config.pretraining_tp = 1
+model.gradient_checkpointing_enable()
 
-    model.config.use_cache = False #silence the warnings. Please re-enable for inference!
-    model.config.pretraining_tp = 1
-    model.gradient_checkpointing_enable()
-
-    # Load tokenizer
-    tokenizer = AutoTokenizer.from_pretrained(base_model, trust_remote_code=True)
-    tokenizer.padding_side = 'right'
-    tokenizer.pad_token = tokenizer.eos_token
-    tokenizer.add_eos_token = True
-    tokenizer.bos_token, tokenizer.eos_token
+# Load tokenizer
+tokenizer = AutoTokenizer.from_pretrained(base_model, trust_remote_code=True)
+tokenizer.padding_side = 'right'
+tokenizer.pad_token = tokenizer.eos_token
+tokenizer.add_eos_token = True
+tokenizer.bos_token, tokenizer.eos_token
 ```
 
 ## Run history
 
 | train/epoch                    | ▁▁▁▂▂▂▂▂▂▃▃▃▃▃▃▄▄▄▄▄▅▅▅▅▅▆▆▆▆▆▆▇▇▇▇▇▇███ |
+| ------------------------------ | ---------------------------------------- |
 | train/global_step              | ▁▁▁▂▂▂▂▂▂▃▃▃▃▃▃▄▄▄▄▄▅▅▅▅▅▅▆▆▆▆▆▇▇▇▇▇▇███ |
 | train/learning_rate            | ▁▁▁▁▁▁▁▁▁▁▁▁▁▁▁▁▁▁▁▁▁▁▁▁▁▁▁▁▁▁▁▁▁▁▁▁▁▁▁▁ |
 | train/loss                     | █▅▅▄▄▄▅▃▄▄▃▃▃▁▂▂▂▂▂▂▁▂▂▂▂▂▂▁▂▁▁▁▁▁▁▂▁▁▂▁ |
@@ -72,10 +74,9 @@ Load model
 | train/train_samples_per_second | ▁                                        |
 | train/train_steps_per_second   | ▁                                        |
 
-
 ## Run summary
-
 | train/epoch                    | 3.0                |
+| ------------------------------ | ------------------ |
 | train/global_step              | 189                |
 | train/learning_rate            | 0.0002             |
 | train/loss                     | 0.5583             |
