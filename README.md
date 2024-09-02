@@ -1,16 +1,16 @@
 # FineTuning-Chatbot-Vistral7B-With-Travel-Dataset
 
 ## General
-
-Fine tuning model Viet-Mistral 7B on Travel Vietnamese QA dataset.
-
+- Fine-tuned the Viet-Mistral 7B model on a Vietnamese Travel QA dataset. 
+- The training was conducted using 2x T4 GPUs.
+- Utilized LoRA (Low-Rank Adaptation) and Supervised Fine-tuning for model fine-tuning.
   
 
 ## About dataset
 
-- The dataset was created by Gemini-1.5 with topics about Vietnam tourism such as famous places, costs travel, local food, culture and festivals, etc. . .
+- The dataset was generated using Gemini-1.5 and covers various topics related to Vietnam tourism, including famous places, travel costs, local food, culture, and festivals.
 
-- Includes 4500 rows with 2 columns: *ques*, *ans*.
+- The dataset consists of 4,500 rows with two columns: *ques* (question) and *ans* (answer).
 
 | ques                                                      | ans                                                                                                                  |
 | --------------------------------------------------------- | -------------------------------------------------------------------------------------------------------------------- |
@@ -25,7 +25,8 @@ Fine tuning model Viet-Mistral 7B on Travel Vietnamese QA dataset.
 
 ## Model
 
-Vistral (Viet Mistral) is a model developed from model Mistral for Vietnamese QA problems.
+Vistral (Viet-Mistral) is a model adapted from Mistral for Vietnamese QA tasks.
+
 *Model is loaded in 4bit format.*
 
 ```
